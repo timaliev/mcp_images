@@ -54,12 +54,12 @@ In `~/.pi/agent/settings.json`:
 | Tool | Description |
 |------|-------------|
 | `raster_info` | Image metadata: dimensions, format, mode, DPI, file size |
-| `raster_convert` | Convert format (png, jpeg, webp, tiff, bmp) |
+| `raster_convert` | Convert format (png, jpeg, webp, tiff, bmp). Use `fmt` parameter |
 | `raster_resize` | Resize by dimensions, scale, or fit mode |
 | `raster_crop` | Crop to rectangle |
 | `raster_rotate` | Rotate by degrees |
 | `raster_adjust` | Brightness, contrast, saturation, sharpness, gamma |
-| `raster_filter` | Blur, sharpen, denoise, grayscale, invert, threshold |
+| `raster_filter` | Blur, sharpen, denoise, grayscale, invert, threshold. Use `filter_name` parameter |
 | `raster_enhance` | Auto-enhance (contrast, color, sharpness, all) |
 
 ## Development
