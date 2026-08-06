@@ -19,14 +19,15 @@ OUTPUT_DIR = Path(os.environ.get("RASTER_OUTPUT_DIR", tempfile.gettempdir()))
 
 
 def _output_path(path: str, suffix: str | None = None) -> str:
-    """Generate output path, preserving original name with optional suffix."""
+    """Generate output path, preserving original extension with optional suffix before it."""
     p = Path(path)
     stem = p.stem
-    ext = p.suffix if suffix is None else f".{suffix}"
-    out = OUTPUT_DIR / f"{stem}__processed{ext}"
+    ext = p.suffix
+    suffix_str = f"_{suffix}" if suffix else ""
+    out = OUTPUT_DIR / f"{stem}__processed{suffix_str}{ext}"
     counter = 1
     while out.exists():
-        out = OUTPUT_DIR / f"{stem}__processed_{counter}{ext}"
+        out = OUTPUT_DIR / f"{stem}__processed{suffix_str}_{counter}{ext}"
         counter += 1
     return str(out)
 
@@ -55,10 +56,10 @@ def raster_info(path: str) -> dict:
 
 
 @server.tool()
-def raster_convert(path: str, format: str, quality: int = 85, output: str | None = None) -> dict:
+def raster_convert(path: str, fmt: str, quality: int = 85, output: str | None = None) -> dict:
     """Convert image to another format (png, jpeg, webp, tiff, bmp)."""
     img = _load_image(path)
-    fmt = format.lower()
+    fmt = fmt.lower()
     if fmt not in {"png", "jpeg", "webp", "tiff", "bmp"}:
         return {"success": False, "error": "EUNSUPPORTED", "detail": f"Unsupported format: {fmt}"}
 
@@ -72,7 +73,7 @@ def raster_convert(path: str, format: str, quality: int = 85, output: str | None
     if fmt == "jpeg" and img.mode in ("RGBA", "P"):
         img = img.convert("RGB")
     img.save(out, format=fmt.upper(), **save_kwargs)
-    return {"success": True, "output_path": out, "format": format, "size": os.path.getsize(out)}
+    return {"success": True, "output_path": out, "format": fmt, "size": os.path.getsize(out)}
 
 
 @server.tool()
@@ -186,20 +187,20 @@ _FILTERS = {
 @server.tool()
 def raster_filter(
     path: str,
-    filter: str,
+    filter_name: str,
     radius: int = 2,
     threshold_value: int = 128,
     output: str | None = None,
 ) -> dict:
     """Apply a named filter. Supported: blur, gaussian_blur, median, sharpen, edge_enhance, denoise, grayscale, invert, threshold."""
     img = _load_image(path)
-    fname = filter.lower()
+    fname = filter_name.lower()
 
     if fname not in _FILTERS:
         return {
             "success": False,
             "error": "EUNSUPPORTED",
-            "detail": f"Unknown filter: {filter}. Available: {', '.join(_FILTERS)}",
+            "detail": f"Unknown filter: {filter_name}. Available: {', '.join(_FILTERS)}",
         }
 
     if fname == "grayscale":
@@ -220,9 +221,9 @@ def raster_filter(
     else:
         img = img.filter(_FILTERS[fname])
 
-    out = output or _output_path(path, filter)
+    out = output or _output_path(path, filter_name)
     img.save(out)
-    return {"success": True, "output_path": out, "filter_applied": filter}
+    return {"success": True, "output_path": out, "filter_applied": filter_name}
 
 
 @server.tool()
