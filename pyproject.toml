@@ -1,5 +1,5 @@
 [project]
-name = "pi-mcp-images"
+name = "mcp-images"
 version = "1.0.0"
 description = "MCP server for raster image manipulation — Pillow + OpenCV"
 requires-python = ">=3.11,<3.14"
