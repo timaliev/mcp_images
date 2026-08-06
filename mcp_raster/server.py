@@ -35,14 +35,19 @@ def _output_path(path: str, suffix: str | None = None) -> str:
 def _load_image(path: str) -> Image.Image:
     """Load image or raise structured error if not found."""
     if not os.path.isfile(path):
-        raise FileNotFoundError(f"File not found: {path}")
-    return Image.open(path)
+        return None, {"success": False, "error": "ENOENT", "detail": f"File not found: {path}"}
+    try:
+        return Image.open(path), None
+    except Exception as e:
+        return None, {"success": False, "error": "EPROCESSING", "detail": f"Cannot open image: {e}"}
 
 
 @server.tool()
 def raster_info(path: str) -> dict:
     """Return image metadata: dimensions, format, mode, DPI, file size."""
-    img = _load_image(path)
+    img, err = _load_image(path)
+    if err:
+        return err
     return {
         "success": True,
         "width": img.width,
@@ -58,7 +63,9 @@ def raster_info(path: str) -> dict:
 @server.tool()
 def raster_convert(path: str, fmt: str, quality: int = 85, output: str | None = None) -> dict:
     """Convert image to another format (png, jpeg, webp, tiff, bmp)."""
-    img = _load_image(path)
+    img, err = _load_image(path)
+    if err:
+        return err
     fmt = fmt.lower()
     if fmt not in {"png", "jpeg", "webp", "tiff", "bmp"}:
         return {"success": False, "error": "EUNSUPPORTED", "detail": f"Unsupported format: {fmt}"}
@@ -86,7 +93,9 @@ def raster_resize(
     output: str | None = None,
 ) -> dict:
     """Resize image. Provide width/height, scale factor, or fit mode (cover/contain/fill)."""
-    img = _load_image(path)
+    img, err = _load_image(path)
+    if err:
+        return err
 
     if scale and width is None and height is None:
         width = int(img.width * scale)
@@ -122,7 +131,9 @@ def raster_resize(
 @server.tool()
 def raster_crop(path: str, left: int, top: int, right: int, bottom: int, output: str | None = None) -> dict:
     """Crop image to the specified rectangle (inclusive pixel coordinates)."""
-    img = _load_image(path)
+    img, err = _load_image(path)
+    if err:
+        return err
     cropped = img.crop((left, top, right, bottom))
     out = output or _output_path(path, "crop")
     cropped.save(out)
@@ -132,7 +143,9 @@ def raster_crop(path: str, left: int, top: int, right: int, bottom: int, output:
 @server.tool()
 def raster_rotate(path: str, degrees: float, expand: bool = True, output: str | None = None) -> dict:
     """Rotate image by degrees. expand=True enlarges canvas to fit."""
-    img = _load_image(path)
+    img, err = _load_image(path)
+    if err:
+        return err
     rotated = img.rotate(degrees, expand=expand, resample=Image.BICUBIC)
     out = output or _output_path(path)
     rotated.save(out)
@@ -150,7 +163,9 @@ def raster_adjust(
     output: str | None = None,
 ) -> dict:
     """Adjust image properties. Values: 1.0 = no change, >1.0 = increase, <1.0 = decrease."""
-    img = _load_image(path)
+    img, err = _load_image(path)
+    if err:
+        return err
 
     if brightness is not None:
         img = ImageEnhance.Brightness(img).enhance(brightness)
@@ -193,7 +208,9 @@ def raster_filter(
     output: str | None = None,
 ) -> dict:
     """Apply a named filter. Supported: blur, gaussian_blur, median, sharpen, edge_enhance, denoise, grayscale, invert, threshold."""
-    img = _load_image(path)
+    img, err = _load_image(path)
+    if err:
+        return err
     fname = filter_name.lower()
 
     if fname not in _FILTERS:
@@ -229,7 +246,9 @@ def raster_filter(
 @server.tool()
 def raster_enhance(path: str, mode: str = "all", factor: float = 1.5, output: str | None = None) -> dict:
     """Auto-enhance image. mode: contrast, color, sharpness, or all."""
-    img = _load_image(path)
+    img, err = _load_image(path)
+    if err:
+        return err
     modes = {"contrast": False, "color": False, "sharpness": False}
 
     if mode == "all":

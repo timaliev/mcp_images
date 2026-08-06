@@ -41,8 +41,9 @@ def test_raster_info_returns_metadata(sample_image):
 
 def test_raster_info_file_not_found():
     from mcp_raster.server import raster_info
-    with pytest.raises(FileNotFoundError):
-        raster_info("/nonexistent/image.png")
+    result = raster_info("/nonexistent/image.png")
+    assert result["success"] is False
+    assert result["error"] == "ENOENT"
 
 
 # ---------------------------------------------------------------------------
