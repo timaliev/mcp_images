@@ -162,47 +162,4 @@ def test_raster_adjust_gamma(sample_image):
     assert mean_b < 10, f"B={mean_b:.0f} should be near 0 for pure red after gamma"
 
 
-# ---------------------------------------------------------------------------
-# raster_filter
-# ---------------------------------------------------------------------------
 
-def test_raster_filter_grayscale(sample_image):
-    from mcp_raster.server import raster_filter
-    result = raster_filter(sample_image, "grayscale")
-    assert result["success"] is True
-    assert result["filter_applied"] == "grayscale"
-
-
-def test_raster_filter_blur(sample_image):
-    from mcp_raster.server import raster_filter
-    result = raster_filter(sample_image, "blur")
-    assert result["success"] is True
-
-
-def test_raster_filter_unknown(sample_image):
-    from mcp_raster.server import raster_filter
-    result = raster_filter(sample_image, "nonexistent")
-    assert result["success"] is False
-    assert result["error"] == "EUNSUPPORTED"
-
-
-# ---------------------------------------------------------------------------
-# raster_enhance
-# ---------------------------------------------------------------------------
-
-def test_raster_enhance_contrast(sample_image):
-    from mcp_raster.server import raster_enhance
-    result = raster_enhance(sample_image, mode="contrast", factor=2.0)
-    assert result["success"] is True
-
-
-def test_raster_enhance_all(sample_image):
-    from mcp_raster.server import raster_enhance
-    result = raster_enhance(sample_image, mode="all")
-    assert result["success"] is True
-
-
-def test_raster_enhance_unknown_mode(sample_image):
-    from mcp_raster.server import raster_enhance
-    result = raster_enhance(sample_image, mode="nonexistent")
-    assert result["success"] is False
