@@ -2,7 +2,7 @@
 
 MCP server for raster image manipulation — Pillow + OpenCV.
 
-> **Requires [pi-mcp-bridge](https://github.com/timaliev/pi-mcp-bridge)** to connect to pi.
+> **Requires [pi-mcp-bridge](https://github.com/timaliev/pi-mcp-bridge)** to connect to [pi](https://pi.dev).
 
 ## Installation
 
@@ -37,6 +37,8 @@ In `~/.pi/agent/settings.json`:
 ```
 
 ### Standalone MCP client
+
+In `~/.mcp.json`:
 
 ```json
 {
