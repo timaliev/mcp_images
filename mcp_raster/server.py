@@ -10,7 +10,17 @@ import cv2
 import numpy as np
 
 from mcp_raster._core import _load_image, _output_path
+from mcp_raster.draw import raster_text, raster_draw
 from mcp_raster.filters import raster_filter, raster_enhance
+from mcp_raster.transform import (
+    raster_perspective,
+    raster_morphology,
+    raster_balance,
+    raster_padding,
+    raster_channels,
+    raster_compress,
+)
+from mcp_raster.metadata import raster_exif, raster_colorspace, raster_blend, raster_contours
 
 logging.basicConfig(level=logging.INFO, stream=sys.stderr)
 logger = logging.getLogger("mcp-raster")
@@ -163,6 +173,21 @@ def raster_adjust(
 
 
 
+
+
+server.tool()(raster_exif)
+server.tool()(raster_colorspace)
+server.tool()(raster_blend)
+server.tool()(raster_contours)
+
+server.tool()(raster_text)
+server.tool()(raster_draw)
+server.tool()(raster_perspective)
+server.tool()(raster_morphology)
+server.tool()(raster_balance)
+server.tool()(raster_padding)
+server.tool()(raster_channels)
+server.tool()(raster_compress)
 
 
 def main():
