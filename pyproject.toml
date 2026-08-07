@@ -9,6 +9,13 @@ dependencies = [
     "opencv-python-headless>=4.10",
 ]
 
+[project.optional-dependencies]
+analysis = [
+    "scikit-image>=0.24",
+    "pyzbar>=0.1",
+    "rembg[cpu]>=2.0",
+]
+
 [project.scripts]
 mcp-raster = "mcp_raster.server:main"
 

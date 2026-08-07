@@ -20,6 +20,7 @@ from mcp_raster.transform import (
     raster_channels,
     raster_compress,
 )
+from mcp_raster.analysis import raster_diff, raster_histogram, raster_edge, raster_qr, raster_bgremove
 from mcp_raster.metadata import raster_exif, raster_colorspace, raster_blend, raster_contours
 
 logging.basicConfig(level=logging.INFO, stream=sys.stderr)
@@ -188,6 +189,12 @@ server.tool()(raster_balance)
 server.tool()(raster_padding)
 server.tool()(raster_channels)
 server.tool()(raster_compress)
+
+server.tool()(raster_diff)
+server.tool()(raster_histogram)
+server.tool()(raster_edge)
+server.tool()(raster_qr)
+server.tool()(raster_bgremove)
 
 
 def main():
