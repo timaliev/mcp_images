@@ -2,44 +2,19 @@
 
 import os
 import sys
-import tempfile
 import logging
-from pathlib import Path
 
 from mcp.server import MCPServer
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 import cv2
 import numpy as np
 
+from mcp_raster._core import _load_image, _output_path
+
 logging.basicConfig(level=logging.INFO, stream=sys.stderr)
 logger = logging.getLogger("mcp-raster")
 
 server = MCPServer("raster", version="0.1.0")
-OUTPUT_DIR = Path(os.environ.get("RASTER_OUTPUT_DIR", tempfile.gettempdir()))
-
-
-def _output_path(path: str, suffix: str | None = None) -> str:
-    """Generate output path, preserving original extension with optional suffix before it."""
-    p = Path(path)
-    stem = p.stem
-    ext = p.suffix
-    suffix_str = f"_{suffix}" if suffix else ""
-    out = OUTPUT_DIR / f"{stem}__processed{suffix_str}{ext}"
-    counter = 1
-    while out.exists():
-        out = OUTPUT_DIR / f"{stem}__processed{suffix_str}_{counter}{ext}"
-        counter += 1
-    return str(out)
-
-
-def _load_image(path: str) -> Image.Image:
-    """Load image or raise structured error if not found."""
-    if not os.path.isfile(path):
-        return None, {"success": False, "error": "ENOENT", "detail": f"File not found: {path}"}
-    try:
-        return Image.open(path), None
-    except Exception as e:
-        return None, {"success": False, "error": "EPROCESSING", "detail": f"Cannot open image: {e}"}
 
 
 @server.tool()
