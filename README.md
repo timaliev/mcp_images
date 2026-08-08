@@ -1,6 +1,6 @@
 # mcp_images
 
-MCP server for raster image manipulation — Pillow + OpenCV + ImageMagick/Wand. 24 tools with pluggable backends.
+MCP server for raster image manipulation — Pillow + OpenCV. 25 tools across draw, filter, transform, metadata, and analysis categories.
 
 > **Requires [pi-mcp-bridge](https://github.com/timaliev/pi-mcp-bridge)** to connect to [pi](https://pi.dev).
 
