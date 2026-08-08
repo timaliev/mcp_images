@@ -1,8 +1,30 @@
 """Draw tools for raster MCP: text overlay, shape drawing."""
 
+import platform
 from PIL import ImageDraw, ImageFont
 
 from mcp_raster._core import _load_image, _output_path
+
+_FONT_CANDIDATES = [
+    "/System/Library/Fonts/Helvetica.ttc",    # macOS
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",  # Linux
+    "/usr/share/fonts/TTF/DejaVuSans.ttf",    # Linux alt
+    "arial.ttf",                                # Windows
+] if platform.system() != "Windows" else [
+    "C:/Windows/Fonts/arial.ttf",
+    "C:/Windows/Fonts/calibri.ttf",
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+]
+
+
+def _resolve_font(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
+    """Try platform-specific fonts, fall back to default."""
+    for candidate in _FONT_CANDIDATES:
+        try:
+            return ImageFont.truetype(candidate, size)
+        except (OSError, IOError):
+            continue
+    return ImageFont.load_default()
 
 
 def raster_text(
@@ -19,10 +41,7 @@ def raster_text(
     if err:
         return err
     draw = ImageDraw.Draw(img)
-    try:
-        font = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", size)
-    except (OSError, IOError):
-        font = ImageFont.load_default()
+    font = _resolve_font(size)
     draw.text((x, y), text, fill=color, font=font)
     out = output or _output_path(path, "text")
     img.save(out)

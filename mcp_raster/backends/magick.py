@@ -16,6 +16,12 @@ def _handle_wand_error(path: str) -> dict | None:
     return None
 
 
+def _wand_error(e: WandException) -> dict:
+    """Extract clean first line from Wand exception."""
+    msg = str(e).split('\n')[0].strip()
+    return {"success": False, "error": "EPROCESSING", "detail": msg}
+
+
 class MagickBackend(RasterBackend):
     name = "magick"
 
@@ -28,18 +34,21 @@ class MagickBackend(RasterBackend):
             return err
         try:
             with Image(filename=path) as img:
+                mode = "L" if getattr(img, 'colorspace', None) == "gray" else "RGB"
+                if getattr(img, 'alpha_channel', False):
+                    mode = "RGBA" if mode == "RGB" else "LA"
                 return {
                     "success": True,
                     "width": img.width,
                     "height": img.height,
                     "format": img.format,
-                    "mode": "TODO",  # Wand doesn't expose mode like Pillow
+                    "mode": mode,
                     "dpi": (img.resolution[0] if img.resolution else None),
                     "filesize": os.path.getsize(path),
                     "channels": len(img.channel_images) if hasattr(img, 'channel_images') else 3,
                 }
         except WandException as e:
-            return {"success": False, "error": "EPROCESSING", "detail": str(e)}
+            return _wand_error(e)
 
     # ------------------------------------------------------------------
     # convert
@@ -65,7 +74,7 @@ class MagickBackend(RasterBackend):
                 img.save(filename=out)
                 return {"success": True, "output_path": out, "format": fmt, "size": os.path.getsize(out)}
         except WandException as e:
-            return {"success": False, "error": "EPROCESSING", "detail": str(e)}
+            return _wand_error(e)
 
     # ------------------------------------------------------------------
     # resize
@@ -100,7 +109,7 @@ class MagickBackend(RasterBackend):
                 img.save(filename=out)
                 return {"success": True, "output_path": out, "width": img.width, "height": img.height}
         except WandException as e:
-            return {"success": False, "error": "EPROCESSING", "detail": str(e)}
+            return _wand_error(e)
 
     # ------------------------------------------------------------------
     # crop
@@ -117,7 +126,7 @@ class MagickBackend(RasterBackend):
                 img.save(filename=out)
                 return {"success": True, "output_path": out, "crop_rect": [left, top, right, bottom]}
         except WandException as e:
-            return {"success": False, "error": "EPROCESSING", "detail": str(e)}
+            return _wand_error(e)
 
     # ------------------------------------------------------------------
     # rotate
@@ -129,16 +138,12 @@ class MagickBackend(RasterBackend):
             return err
         try:
             with Image(filename=path) as img:
-                # Wand rotates around center by default
-                if expand:
-                    img.rotate(degrees)
-                else:
-                    img.rotate(degrees)
+                img.rotate(degrees)
                 out = output or _output_path(path)
                 img.save(filename=out)
                 return {"success": True, "output_path": out}
         except WandException as e:
-            return {"success": False, "error": "EPROCESSING", "detail": str(e)}
+            return _wand_error(e)
 
     # ------------------------------------------------------------------
     # adjust
@@ -158,7 +163,6 @@ class MagickBackend(RasterBackend):
                 if saturation is not None:
                     img.modulate(saturation=saturation * 100)
                 if sharpness is not None:
-                    # Wand unsharp_mask(radius, sigma, amount, threshold)
                     amount = (sharpness - 1.0) * 2.0
                     if amount > 0:
                         img.unsharp_mask(radius=0.5, sigma=0.5, amount=amount, threshold=0)
@@ -168,4 +172,4 @@ class MagickBackend(RasterBackend):
                 img.save(filename=out)
                 return {"success": True, "output_path": out}
         except WandException as e:
-            return {"success": False, "error": "EPROCESSING", "detail": str(e)}
+            return _wand_error(e)

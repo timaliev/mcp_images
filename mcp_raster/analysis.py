@@ -53,7 +53,7 @@ def raster_histogram(path: str, channel: str = "all") -> dict:
     idx = ch_map.get(channel.lower())
     if idx is None:
         return {"success": False, "error": "EUNSUPPORTED",
-                "detail": f"Unknown channel: {channel}. Use r, g, b, a, or all"}
+                "detail": f"Unknown channel: {channel}. Available: r, g, b, a, all"}
     bands = img.split()
     if idx >= len(bands):
         return {"success": False, "error": "EPROCESSING", "detail": f"Image has no channel '{channel}'"}
