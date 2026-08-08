@@ -7,6 +7,7 @@ from mcp.server import MCPServer
 
 from mcp_raster._core import _load_image, _output_path  # kept for tool convenience
 from mcp_raster.backends.pillow import PillowBackend
+from mcp_raster.backends.magick import MagickBackend
 from mcp_raster.draw import raster_text, raster_draw
 from mcp_raster.filters import raster_filter, raster_enhance
 from mcp_raster.transform import (
@@ -29,7 +30,8 @@ server = MCPServer("raster", version="0.1.0")
 # Pluggable backends
 # ---------------------------------------------------------------------------
 _pillow = PillowBackend()
-_backends = {"pillow": _pillow}
+_magick = MagickBackend()
+_backends = {"pillow": _pillow, "magick": _magick}
 
 
 def _resolve_backend(backend_name: str | None = None) -> PillowBackend:
