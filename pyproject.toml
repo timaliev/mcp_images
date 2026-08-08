@@ -17,7 +17,7 @@ analysis = [
 ]
 
 [project.scripts]
-mcp-raster = "mcp_raster.server:main"
+mcp-images = "mcp_raster.server:main"
 
 [build-system]
 requires = ["hatchling"]
