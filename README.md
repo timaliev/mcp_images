@@ -100,7 +100,7 @@ raster_resize(path, width=800, backend="magick")
 raster_crop(path, 10, 10, 100, 100, backend="pillow")
 ```
 
-## Tools (24 total)
+## Tools (25 total)
 
 ### Core
 | Tool | Description |

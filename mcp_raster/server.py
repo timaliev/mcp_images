@@ -122,6 +122,9 @@ server.tool()(raster_padding)
 server.tool()(raster_channels)
 server.tool()(raster_compress)
 
+server.tool()(raster_filter)
+server.tool()(raster_enhance)
+
 server.tool()(raster_diff)
 server.tool()(raster_histogram)
 server.tool()(raster_edge)
