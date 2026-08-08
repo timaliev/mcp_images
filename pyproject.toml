@@ -1,16 +1,24 @@
 [project]
 name = "mcp-images"
-version = "1.0.0"
-description = "MCP server for raster image manipulation — Pillow + OpenCV"
+version = "1.2.1"
+description = "MCP server for raster image manipulation — Pillow + OpenCV + ImageMagick/Wand"
 requires-python = ">=3.11,<3.14"
 dependencies = [
     "mcp[cli]>=1.9",
     "pillow>=11.0",
     "opencv-python-headless>=4.10",
+    "wand>=0.7.2",
+]
+
+[project.optional-dependencies]
+analysis = [
+    "scikit-image>=0.24",
+    "pyzbar>=0.1",
+    "rembg[cpu]>=2.0",
 ]
 
 [project.scripts]
-mcp-raster = "mcp_raster.server:main"
+mcp-images = "mcp_raster.server:main"
 
 [build-system]
 requires = ["hatchling"]
