@@ -31,7 +31,7 @@ In `~/.pi/agent/settings.json`:
     "servers": [
       {
         "name": "raster",
-        "command": "mcp-raster",
+        "command": "mcp-images",
         "args": []
       }
     ]
@@ -47,7 +47,7 @@ In `~/.mcp.json`:
 {
   "mcpServers": {
     "raster": {
-      "command": "mcp-raster",
+      "command": "mcp-images",
       "args": []
     }
   }

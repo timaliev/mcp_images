@@ -24,7 +24,7 @@ from mcp_raster.analysis import raster_diff, raster_histogram, raster_edge, rast
 from mcp_raster.metadata import raster_exif, raster_colorspace, raster_blend, raster_contours
 
 logging.basicConfig(level=logging.INFO, stream=sys.stderr)
-logger = logging.getLogger("mcp-raster")
+logger = logging.getLogger("mcp-images")
 
 server = MCPServer("raster", version="0.1.0")
 
