@@ -1,22 +1,37 @@
 # mcp_images
 
-MCP server for raster image manipulation — Pillow + OpenCV. 24 tools across draw, filter, transform, metadata, and analysis categories.
+MCP server for raster image manipulation — Pillow + OpenCV + ImageMagick/Wand. 24 tools with pluggable backends.
 
 > **Requires [pi-mcp-bridge](https://github.com/timaliev/pi-mcp-bridge)** to connect to [pi](https://pi.dev).
 
 ## Installation
 
 ```bash
+# Base install (Pillow + ImageMagick/Wand)
 pip install git+https://github.com/timaliev/mcp_images.git
+
+# Or via uv:
+uv tool install git+https://github.com/timaliev/mcp_images.git
 ```
 
-Or via uv:
+### Optional dependencies
+
+| Extra | Packages | Tools enabled |
+|-------|----------|---------------|
+| `[analysis]` | scikit-image, pyzbar, rembg | `raster_diff`, `raster_qr`, `raster_bgremove` |
 
 ```bash
-uv tool install git+https://github.com/timaliev/mcp_images.git
-# with analysis extras (diff, qr, bgremove):
-uv tool install git+https://github.com/timaliev/mcp_images.git[mcp-images]
-pip install mcp-images[analysis]
+# With analysis extras:
+pip install "git+https://github.com/timaliev/mcp_images.git#egg=mcp-images[analysis]"
+
+# Or via uv:
+uv tool install "git+https://github.com/timaliev/mcp_images.git#egg=mcp-images[analysis]"
+```
+
+ImageMagick must be installed separately via system package manager:
+```bash
+brew install imagemagick          # macOS
+apt install imagemagick           # Debian/Ubuntu
 ```
 
 ## Configuration
@@ -52,6 +67,26 @@ In `~/.mcp.json`:
     }
   }
 }
+```
+
+## Backends
+
+Core tools accept an optional `backend` parameter (`"pillow"` or `"magick"`).
+
+| Backend | Library | Strengths |
+|---------|---------|-----------|
+| `pillow` (default) | Pillow + OpenCV | Fast, simple, no extra deps |
+| `magick` | Wand / ImageMagick | HEIC/AVIF/GIF, 40+ resize filters, industry-standard unsharp mask |
+
+```
+# Use ImageMagick for HEIC conversion
+raster_convert(path, "heic", backend="magick")
+
+# Mitchell filter resize via ImageMagick
+raster_resize(path, width=800, backend="magick")
+
+# Back to Pillow for speed
+raster_crop(path, 10, 10, 100, 100, backend="pillow")
 ```
 
 ## Tools (24 total)

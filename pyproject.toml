@@ -1,7 +1,7 @@
 [project]
 name = "mcp-images"
 version = "1.0.0"
-description = "MCP server for raster image manipulation — Pillow + OpenCV"
+description = "MCP server for raster image manipulation — Pillow + OpenCV + ImageMagick/Wand"
 requires-python = ">=3.11,<3.14"
 dependencies = [
     "mcp[cli]>=1.9",
