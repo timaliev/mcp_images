@@ -38,7 +38,15 @@ apt install imagemagick           # Debian/Ubuntu
 
 ### With pi-mcp-bridge
 
-In `~/.pi/agent/settings.json`:
+First install pi-mcp-bridge:
+
+```bash
+pi add mcp-bridge
+# or manually:
+# git clone https://github.com/timaliev/pi-mcp-bridge ~/.pi/agent/extensions/pi-mcp-bridge
+```
+
+Then configure mcp-images in `~/.pi/agent/settings.json`:
 
 ```json
 {
