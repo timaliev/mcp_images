@@ -5,6 +5,12 @@ from PIL import Image
 
 from mcp_raster._core import _load_image, _output_path
 
+_ANALYSIS_INSTALL_HINT = (
+    "Missing optional dependency. Install via:\n"
+    "  pip install git+https://github.com/timaliev/mcp_images.git#egg=mcp-images[analysis]\n"
+    "or: uv tool install git+https://github.com/timaliev/mcp_images.git#egg=mcp-images[analysis]"
+)
+
 
 def raster_diff(path1: str, path2: str, output: str | None = None) -> dict:
     """Compute structural similarity (SSIM) between two images. Requires scikit-image."""
@@ -12,7 +18,7 @@ def raster_diff(path1: str, path2: str, output: str | None = None) -> dict:
         from skimage.metrics import structural_similarity as ssim
     except ImportError:
         return {"success": False, "error": "EUNSUPPORTED",
-                "detail": "Install: pip install mcp-images[analysis]"}
+                "detail": _ANALYSIS_INSTALL_HINT}
     img1, err = _load_image(path1)
     if err:
         return err
@@ -79,7 +85,7 @@ def raster_qr(path: str) -> dict:
         from pyzbar.pyzbar import decode
     except ImportError:
         return {"success": False, "error": "EUNSUPPORTED",
-                "detail": "Install: pip install mcp-images[analysis]"}
+                "detail": _ANALYSIS_INSTALL_HINT}
     img, err = _load_image(path)
     if err:
         return err
@@ -99,7 +105,7 @@ def raster_bgremove(path: str, output: str | None = None) -> dict:
         from rembg import remove
     except ImportError:
         return {"success": False, "error": "EUNSUPPORTED",
-                "detail": "Install: pip install mcp-images[analysis]"}
+                "detail": _ANALYSIS_INSTALL_HINT}
     img, err = _load_image(path)
     if err:
         return err
