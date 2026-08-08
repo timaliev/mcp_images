@@ -130,6 +130,11 @@ server.tool()(raster_bgremove)
 
 
 def main():
+    import sys
+    if "--version" in sys.argv:
+        from importlib.metadata import version
+        print(f"mcp-images {version('mcp-images')}")
+        return
     server.run()
 
 
