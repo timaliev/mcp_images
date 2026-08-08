@@ -14,6 +14,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Documentation
+
+- fix first-line description — 25 tools, no pluggable backends - ([0a4b440](https://github.com/timaliev/mcp_images/commit/0a4b440ad42c193a524bb08c8f4da77e4bce24d5)) - Tim Aliev
+- fix release notes command in development.md - ([2fe45c1](https://github.com/timaliev/mcp_images/commit/2fe45c103aa0fbf7ffd945057fa0fc0083aaaa12)) - Tim Aliev
+---
+
+## [1.3.0](https://github.com/timaliev/mcp_images/compare/v1.2.1..v1.3.0) - 2026-08-08
+
 ### Features
 
 - add --version flag - ([baa298c](https://github.com/timaliev/mcp_images/commit/baa298cbe53acdb19502ef14ad738c9a2a6e9558)) - Tim Aliev
