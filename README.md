@@ -55,7 +55,10 @@ Then configure mcp-images in `~/.pi/agent/settings.json`:
       {
         "name": "raster",
         "command": "mcp-images",
-        "args": []
+        "args": [],
+        "setupCommands": [
+          "uv tool install --force --python 3.11 \"mcp-images[analysis] @ git+https://github.com/timaliev/mcp_images.git\""
+        ]
       }
     ]
   }
